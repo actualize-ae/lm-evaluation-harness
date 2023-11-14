@@ -4,7 +4,7 @@ from typing import List, Union
 import sacrebleu
 import lm_eval.base
 
-from . import babi
+from . import babi, medqa_usmle_assessment
 from . import superglue
 from . import glue
 from . import arc
@@ -335,6 +335,8 @@ TASK_REGISTRY = {
     "haerae_rc": haerae.RC,
     "haerae_rw": haerae.RW,
     "haerae_sn": haerae.SN,
+    "medqa_usmle_assessment": medqa_usmle_assessment.MedQA_USMLE_ASSESSMENT,
+
     # Requires manual download
     # Requires manual download of data.
     # "storycloze_2016": storycloze.StoryCloze2016,
