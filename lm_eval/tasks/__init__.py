@@ -4,7 +4,7 @@ from typing import List, Union
 import sacrebleu
 import lm_eval.base
 
-from . import babi, medqa_usmle_step1, medqa_usmle_step2, medqa_usmle_step3
+from . import babi, medqa, medqa_usmle_assessment, medqa_usmle_step1, medqa_usmle_step2, medqa_usmle_step3
 from . import superglue
 from . import glue
 from . import arc
@@ -67,6 +67,7 @@ from . import ceval
 from . import csatqa
 from . import haerae
 from . import cmmlu
+from . import medmcqa
 
 ########################################
 # Translation tasks
@@ -338,7 +339,9 @@ TASK_REGISTRY = {
     "haerae_rc": haerae.RC,
     "haerae_rw": haerae.RW,
     "haerae_sn": haerae.SN,
-
+    "medqa_usmle_assessment": medqa_usmle_assessment.MedQA_USMLE_ASSESSMENT,
+    "medqa": medqa.MedQA,
+    "medmcqa": medmcqa.MedMCQA,
     # Requires manual download
     # Requires manual download of data.
     # "storycloze_2016": storycloze.StoryCloze2016,
