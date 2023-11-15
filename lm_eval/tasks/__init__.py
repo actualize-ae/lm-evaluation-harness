@@ -67,6 +67,7 @@ from . import ceval
 from . import csatqa
 from . import haerae
 from . import cmmlu
+from . import medmcqa
 
 ########################################
 # Translation tasks
@@ -336,7 +337,7 @@ TASK_REGISTRY = {
     "haerae_rw": haerae.RW,
     "haerae_sn": haerae.SN,
     "medqa": medqa.MedQA,
-
+    "medmcqa": medmcqa.MedMCQA,
     # Requires manual download
     # Requires manual download of data.
     # "storycloze_2016": storycloze.StoryCloze2016,
