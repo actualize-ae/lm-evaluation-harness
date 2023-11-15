@@ -19,15 +19,15 @@ _CITATION = """
 """
 
 
-class MedQA_USMLE_OPTIONS(MultipleChoiceTask):
+class MedQA_USMLE_STEP_1(MultipleChoiceTask):
     VERSION = 0
     # dataset as denoted in HuggingFace `datasets`.
-    DATASET_PATH = "GBaker/MedQA-USMLE-4-options"
+    DATASET_PATH = "augtoma/usmle_step_1"
     # `DATASET_PATH`. If there aren't specific subsets you need, leave this as `None`.
     DATASET_NAME = None
 
     def has_training_docs(self):
-        return True
+        return False
 
     def has_validation_docs(self):
         return False
@@ -35,24 +35,16 @@ class MedQA_USMLE_OPTIONS(MultipleChoiceTask):
     def has_test_docs(self):
         return True
 
-    def training_docs(self):
-        if self.has_training_docs():
-            if self._training_docs is None:
-                self._training_docs = list(
-                    map(self._process_doc, self.dataset["train"])
-                )
-            return self._training_docs
-
     def test_docs(self):
         if self.has_test_docs():
             return map(self._process_doc, self.dataset["test"])
 
     def _process_doc(self, doc):
-        choices = list(doc["options"].values())
+        choices = [choice for choice in doc["options"].values() if choice is not None]
         out_doc = {
             "query": doc["question"],
             "choices": choices,
-            "gold": ['A', 'B', 'C', 'D'].index(doc['answer_idx']),
+            "gold": ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'].index(doc['answer_idx']),
         }
         return out_doc
 
@@ -60,7 +52,7 @@ class MedQA_USMLE_OPTIONS(MultipleChoiceTask):
         return (
                 "You are a highly intelligent doctor who answers the following multiple choice question correctly.\nOnly write the answer down."
                 + "\n\n**Question:**" + doc["query"] + "\n\n"
-                + ",".join(doc['choices'])
+                + ",".join(choice for choice in doc['choices'] if choice is not None)
                 + "\n\n**Answer:**"
         )
 

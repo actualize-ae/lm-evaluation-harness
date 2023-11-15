@@ -4,7 +4,7 @@ from typing import List, Union
 import sacrebleu
 import lm_eval.base
 
-from . import babi, medqa_usmle_options
+from . import babi, medqa_usmle_step1, medqa_usmle_step2, medqa_usmle_step3
 from . import superglue
 from . import glue
 from . import arc
@@ -136,7 +136,9 @@ TASK_REGISTRY = {
     "mc_taco": mc_taco.MCTACO,
     # Science related
     "pubmedqa": pubmedqa.Pubmed_QA,
-    "medqa_usmle_options": medqa_usmle_options.MedQA_USMLE_OPTIONS,
+    "medqa_usmle_sample_exam_step_1": medqa_usmle_step1.MedQA_USMLE_STEP_1,
+    "medqa_usmle_sample_exam_step_2": medqa_usmle_step2.MedQA_USMLE_STEP_2,
+    "medqa_usmle_sample_exam_step_3": medqa_usmle_step3.MedQA_USMLE_STEP_3,
     "sciq": sciq.SciQ,
     "qasper": qasper.QASPER,
     "qa4mre_2011": qa4mre.QA4MRE_2011,
