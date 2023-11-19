@@ -61,6 +61,15 @@ class MedQA(MultipleChoiceTask):
         if self.has_test_docs():
             return map(self._process_doc, self.dataset["test"])
 
+    def _process_doc(self, doc):
+        choices = doc["choices"]
+
+        return {
+            "query": doc["question"],  # The query prompt.
+            "choices": choices,  # The list of choices.
+            "gold": doc["choices"].index(doc["answer"][0]),
+        }
+
     def doc_to_text(self, doc):
         return (
                 "You are a highly intelligent doctor who answers the following multiple choice question correctly.\nOnly write the answer down."
