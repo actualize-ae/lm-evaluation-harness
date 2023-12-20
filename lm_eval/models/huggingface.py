@@ -170,7 +170,7 @@ class HFLM(LM):
                         f"Using `accelerate launch` or `parallelize=True`, device '{device}' will be overridden when placing model."
                     )
                 # TODO: include in warning that `load_in_8bit` etc. affect this too
-                self._device = device
+                self._device = torch.device(device)
 
             # TODO: update this to be less of a hack once subfolder is fixed in HF
             revision = revision + ("/" + subfolder if subfolder is not None else "")
@@ -207,7 +207,7 @@ class HFLM(LM):
         self.model.eval()
         self.model.tie_weights()
 
-        if (gpus >= 1 or self.device.type == "mps") and isinstance(pretrained, str):
+        if (gpus >= 1 or str(self.device) == "mps") and isinstance(pretrained, str):
             if not (parallelize or autogptq or ("device_map" in kwargs)):
                 # place model onto device requested manually,
                 # if not using HF Accelerate or device_map
@@ -238,7 +238,7 @@ class HFLM(LM):
         elif self.tokenizer.eos_token:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
         else:
-            if "Qwen" in pretrained:
+            if self.config.model_type == "qwen":
                 # Qwen's trust_remote_code tokenizer does not allow for adding special tokens
                 self.tokenizer.pad_token = "<|endoftext|>"
             else:
