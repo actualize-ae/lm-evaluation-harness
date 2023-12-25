@@ -30,6 +30,13 @@ def parse_arge():
         type=str,
         help="eval tasks, separated by comma, example: hellaswag,mmlu",
     )
+
+    parser.add_argument(
+        "--num_fewshot",
+        type=int,
+        default=0,
+        help="number of fewshot examples to use for each task",
+    )
     parser.add_argument(
         "--is_lora",
         type=bool,
@@ -55,26 +62,26 @@ def parse_arge():
     return args
 
 
-def run_vllm(model_id_or_path, tasks):
+def run_vllm(model_id_or_path, tasks, num_fewshot=0):
     model_args = {
         "pretrained": model_id_or_path,  # required: taken from UI, no default value
         "tensor_parallel_size": 8,
         "dtype": 'auto',
         "gpu_memory_utilization": 0.90,
-        "trust_remote_code": True,
-        "quantization": "awq"
+        "trust_remote_code": True
     }
     model_args_str = make_model_args_str(model_args)
     cmd = f"lm_eval --model=vllm \
                     --model_args={model_args_str} \
                     --tasks={tasks} \
                     --batch_size=auto \
+                    --num_fewshot={num_fewshot} \
                     --output_path=/opt/ml/model/"
     print(f"Running command: {cmd}")
     return os.system(cmd)
 
 
-def run_hf(model_id_path, peft_model_id_or_path, tasks):
+def run_hf(model_id_path, peft_model_id_or_path, tasks, num_fewshot=0):
     model_args = {
         "pretrained": model_id_path,  # required: taken from UI, no default value
         "peft": peft_model_id_or_path,
@@ -86,6 +93,7 @@ def run_hf(model_id_path, peft_model_id_or_path, tasks):
                     --model_args {model_args_str} \
                     --tasks {tasks} \
                     --batch_size=auto \
+                    --num_fewshot={num_fewshot} \
                     --output_path=/opt/ml/model/"
     print(f"Running command: {cmd}")
     return os.system(cmd)
@@ -145,9 +153,13 @@ def main():
     #         future.add_done_callback(lambda p: print(f"Uploaded to {p.result()}"))
     #     model_id = merged_model_path
     if peft_model_id is not None and len(peft_model_id) > 0:
-        code = run_hf(model_id, peft_model_id, script_args.tasks)
+        code = run_hf(
+            model_id_path=model_id,
+            peft_model_id_or_path=peft_model_id,
+            tasks=script_args.tasks,
+            num_fewshot=script_args.num_fewshot)
     else:
-        code = run_vllm(model_id_or_path=model_id, tasks=script_args.tasks)
+        code = run_vllm(model_id_or_path=model_id, tasks=script_args.tasks, num_fewshot=script_args.num_fewshot)
 
     if code != 0:
         raise Exception("Evaluation job has failed")
@@ -155,5 +167,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
