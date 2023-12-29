@@ -23,7 +23,6 @@ _CITATION = """
 }
 """
 
-
 SUBJECTS = [
     "abstract_algebra",
     "anatomy",
@@ -133,7 +132,12 @@ class GeneralHendrycksTest(MultipleChoiceTask):
         subject = self.DATASET_NAME
         description = f"The following are multiple choice questions (with answers) about {self._format_subject(subject)}."
         kwargs["description"] = description
-        return super().fewshot_context(doc=doc, num_fewshot=num_fewshot, **kwargs)
+        context = super().fewshot_context(doc=doc, num_fewshot=num_fewshot, **kwargs)
+        system = ("<|system|>You are an AI assistant that follows instruction extremely well."
+                  "Help as much as you can.")
+        prompt = f"<|prompter|>{context}"
+        context = f"{system} <|endoftext|>{prompt} <|endoftext|><|assistant|> "
+        return context
 
     def _process_doc(self, doc):
         def format_example(doc, keys):
@@ -150,7 +154,7 @@ class GeneralHendrycksTest(MultipleChoiceTask):
             choices = "".join(
                 [f"{key}. {choice}\n" for key, choice in zip(keys, doc["choices"])]
             )
-            prompt = f"{question}\n{choices}Answer:"
+            prompt = f"{question}\n{choices}"
             return prompt
 
         keys = ["A", "B", "C", "D"]
