@@ -1,0 +1,12 @@
+task: medqa_usmle_assessment
+dataset_path: augtoma/medqa_usmle
+output_type: multiple_choice
+training_split: training
+test_split: test
+process_docs: !function utils.process_docs
+doc_to_text: !function utils.doc_to_text
+doc_to_target: !function utils.doc_to_target
+doc_to_choice: "{{choices}}"
+metric_list:
+  - metric: acc
+  - metric: acc_norm
