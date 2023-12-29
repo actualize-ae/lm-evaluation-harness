@@ -136,7 +136,7 @@ class GeneralHendrycksTest(MultipleChoiceTask):
         system = ("<|system|>You are an AI assistant that follows instruction extremely well."
                   "Help as much as you can.")
         prompt = f"<|prompter|>{context}"
-        context = f"{system} <|endoftext|>{prompt} <|endoftext|><|assistant|> "
+        context = f"{system}\n{prompt}\n<|assistant|> Answer is: "
         return context
 
     def _process_doc(self, doc):
