@@ -94,7 +94,7 @@ def run_hf(model_id_path, peft_model_id_or_path, tasks, num_fewshot=0):
                     --tasks {tasks} \
                     --batch_size=auto \
                     --num_fewshot={num_fewshot} \
-                    --output_path=/opt/ml/model/"
+                    --output_path=/opt/ml/model/results.json"
     print(f"Running command: {cmd}")
     return os.system(cmd)
 
