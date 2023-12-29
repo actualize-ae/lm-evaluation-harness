@@ -95,7 +95,7 @@ def run_hf(model_id_path, tasks, num_fewshot=0, peft_model_id_or_path=None, batc
         "trust_remote_code": True
     }
     if peft_model_id_or_path is not None and len(peft_model_id_or_path) > 0:
-        model_args["peft_model_id_or_path"] = peft_model_id_or_path
+        model_args["peft"] = peft_model_id_or_path
     model_args_str = make_model_args_str(model_args)
     cmd = f"python main.py --model hf-causal-experimental \
                     --model_args {model_args_str} \
