@@ -61,8 +61,7 @@ def run_vllm(model_id_or_path, tasks):
         "tensor_parallel_size": 8,
         "dtype": 'auto',
         "gpu_memory_utilization": 0.90,
-        "trust_remote_code": True,
-        "quantization": "awq"
+        "trust_remote_code": True
     }
     model_args_str = make_model_args_str(model_args)
     cmd = f"lm_eval --model=vllm \
