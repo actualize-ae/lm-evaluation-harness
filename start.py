@@ -1,9 +1,11 @@
 import os
 import argparse
 
+import torch
 import transformers
 import logging
 from huggingface_hub import login
+from peft import AutoPeftModelForCausalLM
 
 
 def parse_arge():
@@ -129,28 +131,28 @@ def main():
             peft_model_id += "/"
         os.system(f"s5cmd sync {peft_model_id}* /tmp/peft_model")
         peft_model_id = "/tmp/peft_model"
-    # if script_args.is_lora:
-    #     # merge the model
-    #     model = AutoPeftModelForCausalLM.from_pretrained(
-    #         model_id,
-    #         low_cpu_mem_usage=True,
-    #         torch_dtype=torch.float16,
-    #         use_auth_token=True,
-    #     )
-    #     model = model.merge_and_unload()
-    #     merged_model_path = "/tmp/merged_model"
-    #     model.save_pretrained(merged_model_path, safe_serialization=True, max_shard_size="10GB")
-    #     # tokenizer = AutoTokenizer.from_pretrained(model_id)
-    #     # tokenizer.save_pretrained(merged_model_path)
-    #     if script_args.repository_id is not None and len(script_args.repository_id) > 0:
-    #         print("uploading to hub")
-    #         from huggingface_hub import HfApi
-    #
-    #         api = HfApi()
-    #         future = api.upload_folder(folder_path=merged_model_path, repo_id=script_args.repository_id,
-    #                                    repo_type="model", run_as_future=True)
-    #         future.add_done_callback(lambda p: print(f"Uploaded to {p.result()}"))
-    #     model_id = merged_model_path
+    if script_args.is_lora:
+        # merge the model
+        model = AutoPeftModelForCausalLM.from_pretrained(
+            model_id,
+            low_cpu_mem_usage=True,
+            torch_dtype=torch.float16,
+            use_auth_token=True,
+        )
+        model = model.merge_and_unload()
+        merged_model_path = "/tmp/merged_model"
+        model.save_pretrained(merged_model_path, safe_serialization=True, max_shard_size="10GB")
+        # tokenizer = AutoTokenizer.from_pretrained(model_id)
+        # tokenizer.save_pretrained(merged_model_path)
+        if script_args.repository_id is not None and len(script_args.repository_id) > 0:
+            print("uploading to hub")
+            from huggingface_hub import HfApi
+
+            api = HfApi()
+            future = api.upload_folder(folder_path=merged_model_path, repo_id=script_args.repository_id,
+                                       repo_type="model", run_as_future=True)
+            future.add_done_callback(lambda p: print(f"Uploaded to {p.result()}"))
+        model_id = merged_model_path
     if peft_model_id is not None and len(peft_model_id) > 0:
         code = run_hf(
             model_id_path=model_id,
