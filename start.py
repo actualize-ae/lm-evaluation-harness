@@ -6,6 +6,7 @@ import transformers
 import logging
 from huggingface_hub import login
 from peft import AutoPeftModelForCausalLM
+from transformers import AutoTokenizer
 
 
 def parse_arge():
@@ -134,7 +135,7 @@ def main():
     if script_args.is_lora:
         # merge the model
         model = AutoPeftModelForCausalLM.from_pretrained(
-            model_id,
+            peft_model_id,
             low_cpu_mem_usage=True,
             torch_dtype=torch.float16,
             use_auth_token=True,
@@ -142,8 +143,14 @@ def main():
         model = model.merge_and_unload()
         merged_model_path = "/tmp/merged_model"
         model.save_pretrained(merged_model_path, safe_serialization=True, max_shard_size="10GB")
-        # tokenizer = AutoTokenizer.from_pretrained(model_id)
-        # tokenizer.save_pretrained(merged_model_path)
+        try:
+            # if peft model has a tokenizer, use it
+            tokenizer = AutoTokenizer.from_pretrained(peft_model_id)
+            tokenizer.save_pretrained(merged_model_path)
+        except:
+            # otherwise use the model id tokenizer
+            tokenizer = AutoTokenizer.from_pretrained(model_id)
+            tokenizer.save_pretrained(merged_model_path)
         if script_args.repository_id is not None and len(script_args.repository_id) > 0:
             print("uploading to hub")
             from huggingface_hub import HfApi
