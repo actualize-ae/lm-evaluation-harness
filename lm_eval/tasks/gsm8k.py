@@ -92,9 +92,16 @@ class GradeSchoolMath8K(Task):
             return INVALID_ANS
 
     def _is_correct(self, completion, answer):
+        print("--------------------------------------")
+        print(f"Completion is {completion}")
+        print(f"Answer is {answer}")
         gold = self._extract_answer(answer)
+        print(f"correct Answer {gold}")
         assert gold != INVALID_ANS, "No ground truth answer found in the document."
-        return self._extract_answer(completion) == gold
+        completion_gold = self._extract_answer(completion) == gold
+        print(f"Completion is correct: {completion_gold}")
+        print("--------------------------------------")
+        return completion_gold
 
     def process_results(self, doc, results):
         """Take a single document and the LM results and evaluates, returning a
