@@ -127,6 +127,8 @@ def main():
         login(token=script_args.hf_token)
     model_id = script_args.model_id
     peft_model_id = script_args.peft_model_id
+    tasks = json.loads(open("all_tasks.json", "r").read())
+    tasks.sort(key=lambda x: x["priority"], reverse=True)
     # if is an s3 path, download the model to /tmp/model using s5cmd
     if model_id.startswith("s3://"):
         # add /* to model id but make sure it doesn't already have / at the end
@@ -163,8 +165,7 @@ def main():
     #         future.add_done_callback(lambda p: print(f"Uploaded to {p.result()}"))
     #     model_id = merged_model_path
     # if peft_model_id is not None and len(peft_model_id) > 0:
-    tasks = json.loads(script_args.tasks)
-    tasks.sort(key=lambda x: x["priority"], reverse=True)
+
     for task in tasks:
         tasks_ = task["tasks"]
         if tasks is None or len(tasks_) == 0:

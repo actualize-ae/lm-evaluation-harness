@@ -1,0 +1,62 @@
+[
+  {
+    "name": "mmlu_medical_tasks_0_shots",
+    "tasks": "hendrycksTest-clinical_knowledge,hendrycksTest-college_biology,hendrycksTest-college_medicine,hendrycksTest-medical_genetics,hendrycksTest-professional_medicine,hendrycksTest-anatomy",
+    "shots": 0,
+    "priority": 10
+  },
+  {
+    "name": "mmlu_medical_exams_tasks_0_shots",
+    "tasks": "medqa_usmle_sample_exam_step_1,medqa_usmle_sample_exam_step_2,medqa_usmle_sample_exam_step_3,pubmedqa,medqa,medmcqa,headqa_en",
+    "shots": 0,
+    "priority": 10
+  },
+  {
+    "name": "mmlu_medical_tasks_5_shots",
+    "tasks": "hendrycksTest-clinical_knowledge,hendrycksTest-college_biology,hendrycksTest-college_medicine,hendrycksTest-medical_genetics,hendrycksTest-professional_medicine,hendrycksTest-anatomy",
+    "shots": 5,
+    "priority": 9
+  },
+  {
+    "name": "mmlu_medical_exams_tasks_5_shots",
+    "tasks": "medqa_usmle_sample_exam_step_1,medqa_usmle_sample_exam_step_2,medqa_usmle_sample_exam_step_3,pubmedqa,medqa,medmcqa,headqa_en",
+    "shots": 5,
+    "priority": 9
+  },
+  {
+    "name": "truthfulqa_mc_0_shots",
+    "tasks": "truthfulqa_mc",
+    "shots": 0,
+    "priority": 8
+  },
+  {
+    "name": "mmlu_tasks_5_shots",
+    "tasks": "hendrycksTest-*",
+    "shots": 5,
+    "priority": 7
+  },
+  {
+    "name": "winogrande_5_shots",
+    "tasks": "winogrande",
+    "shots": 5,
+    "priority": 6
+  },
+  {
+    "name": "gsm8k_5_shots",
+    "tasks": "gsm8k",
+    "shots": 5,
+    "priority": 5
+  },
+  {
+    "name": "hellaswag_10_shots",
+    "tasks": "hellaswag",
+    "shots": 10,
+    "priority": 4
+  },
+  {
+    "name": "arc_challenge_25_shots",
+    "tasks": "arc_challenge",
+    "shots": 25,
+    "priority": 4
+  }
+]
