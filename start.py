@@ -1,3 +1,4 @@
+import json
 import os
 import argparse
 
@@ -88,7 +89,8 @@ def run_vllm(model_id_or_path, tasks, num_fewshot=0):
     return os.system(cmd)
 
 
-def run_hf(model_id_path, tasks, num_fewshot=0, peft_model_id_or_path=None, batch_size="auto"):
+def run_hf(model_id_path, tasks, num_fewshot=0, peft_model_id_or_path=None, batch_size="auto",
+           name=None):
     model_args = {
         "pretrained": model_id_path,  # required: taken from UI, no default value
         "use_accelerate": True,
@@ -102,7 +104,7 @@ def run_hf(model_id_path, tasks, num_fewshot=0, peft_model_id_or_path=None, batc
                     --tasks {tasks} \
                     --batch_size={batch_size} \
                     --num_fewshot={num_fewshot} \
-                    --output_path=/opt/ml/model/results.json"
+                    --output_path=/opt/ml/model/{name}.json"
     print(f"Running command: {cmd}")
     return os.system(cmd)
 
@@ -161,18 +163,30 @@ def main():
     #         future.add_done_callback(lambda p: print(f"Uploaded to {p.result()}"))
     #     model_id = merged_model_path
     # if peft_model_id is not None and len(peft_model_id) > 0:
-    code = run_hf(
-        model_id_path=model_id,
-        peft_model_id_or_path=peft_model_id,
-        tasks=script_args.tasks,
-        num_fewshot=script_args.num_fewshot,
-        batch_size=script_args.batch_size
-    )
-    # else:
-    #     code = run_vllm(model_id_or_path=model_id, tasks=script_args.tasks, num_fewshot=script_args.num_fewshot)
+    tasks = json.loads(script_args.tasks)
+    tasks.sort(key=lambda x: x["priority"], reverse=True)
+    for task in tasks:
+        tasks_ = task["tasks"]
+        if tasks is None or len(tasks_) == 0:
+            logger.warning(f"Skipping task with no tasks, tasks is {task}")
+            continue
+        shots_ = task["shots"]
+        if shots_ is None:
+            logger.warning(f"Skipping task with no shots, tasks is {task}")
+            continue
+        code = run_hf(
+            model_id_path=model_id,
+            peft_model_id_or_path=peft_model_id,
+            tasks=tasks_,
+            num_fewshot=shots_,
+            batch_size=script_args.batch_size,
+            name=task["name"],
+        )
+        # else:
+        #     code = run_vllm(model_id_or_path=model_id, tasks=script_args.tasks, num_fewshot=script_args.num_fewshot)
 
-    if code != 0:
-        raise Exception("Evaluation job has failed")
+        if code != 0:
+            raise Exception("Evaluation job has failed")
 
 
 if __name__ == "__main__":
