@@ -183,6 +183,11 @@ def main():
             batch_size=script_args.batch_size,
             name=task["name"],
         )
+        try:
+            os.system(f"s5cmd cp /opt/ml/model s3://sagemaker-us-west-2-416563578471/evals/ancient-tree-final/")
+        except:
+            print("failed to upload")
+
         # else:
         #     code = run_vllm(model_id_or_path=model_id, tasks=script_args.tasks, num_fewshot=script_args.num_fewshot)
 
