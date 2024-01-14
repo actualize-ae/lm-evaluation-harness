@@ -52,10 +52,10 @@ def parse_arge():
         help="is the model a LORA adapter model",
     )
     parser.add_argument(
-        "--email",
+        "--s3_output_path",
         type=str,
         default="",
-        help="Email address to receive the results in",
+        help="s3 output path to upload the model to",
     )
 
     parser.add_argument(
@@ -134,13 +134,17 @@ def main():
         # add /* to model id but make sure it doesn't already have / at the end
         if model_id[-1] != "/":
             model_id += "/"
-        os.system(f"s5cmd sync {model_id}* /tmp/model")
-        model_id = "/tmp/model"
+        code = os.system(f"s5cmd sync {model_id}* ./model_")
+        if code != 0:
+            raise Exception("Failed to download model")
+        model_id = "./model_"
     if peft_model_id is not None and peft_model_id.startswith("s3://"):
         # add /* to model id but make sure it doesn't already have / at the end
         if peft_model_id[-1] != "/":
             peft_model_id += "/"
-        os.system(f"s5cmd sync {peft_model_id}* /tmp/peft_model")
+        code = os.system(f"s5cmd sync {peft_model_id}* /tmp/peft_model")
+        if code != 0:
+            raise Exception("Failed to download peft model")
         peft_model_id = "/tmp/peft_model"
     # if script_args.is_lora:
     #     # merge the model
@@ -184,7 +188,7 @@ def main():
             name=task["name"],
         )
         try:
-            os.system(f"s5cmd cp /opt/ml/model s3://sagemaker-us-west-2-416563578471/evals/ancient-tree-final/")
+            os.system(f"s5cmd cp /opt/ml/model {script_args.s3_output_path}")
         except:
             print("failed to upload")
 
