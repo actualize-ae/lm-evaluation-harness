@@ -7,7 +7,7 @@
   },
   {
     "name": "mmlu_medical_exams_tasks_0_shots",
-    "tasks": "medqa_usmle_sample_exam_step_1,medqa_usmle_sample_exam_step_2,medqa_usmle_sample_exam_step_3,pubmedqa,medqa,medmcqa,headqa_en",
+    "tasks": "medqa_usmle_sample_exam_step_1,medqa_usmle_sample_exam_step_2,medqa_usmle_sample_exam_step_3,pubmedqa,medqa,medmcqa",
     "shots": 0,
     "priority": 10
   },
@@ -19,7 +19,7 @@
   },
   {
     "name": "mmlu_medical_exams_tasks_5_shots",
-    "tasks": "medqa_usmle_sample_exam_step_1,medqa_usmle_sample_exam_step_2,medqa_usmle_sample_exam_step_3,pubmedqa,medqa,medmcqa,headqa_en",
+    "tasks": "medqa_usmle_sample_exam_step_1,medqa_usmle_sample_exam_step_2,medqa_usmle_sample_exam_step_3,pubmedqa,medqa,medmcqa",
     "shots": 5,
     "priority": 9
   },
